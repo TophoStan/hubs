@@ -171,6 +171,7 @@ async function fetchAppConfigAndEnvironmentVars() {
 
   // dev.reticulum.io doesn't run ita
   if (host === "dev.reticulum.io") {
+    console.log("Using dev.reticulum.io app config");
     return appConfig;
   }
 
@@ -250,8 +251,9 @@ module.exports = async (env, argv) => {
     }
 
     if (env.localDev) {
-      const localDevHost = "hubs.local";
+      const localDevHost = "localhost";
       // Local Dev Environment (npm run local)
+      console.log("Using local dev environment");
       Object.assign(process.env, {
         HOST: localDevHost,
         RETICULUM_SOCKET_SERVER: localDevHost,
@@ -259,7 +261,7 @@ module.exports = async (env, argv) => {
         NON_CORS_PROXY_DOMAINS: `${localDevHost},dev.reticulum.io`,
         BASE_ASSETS_PATH: `https://${localDevHost}:8080/`,
         RETICULUM_SERVER: `${localDevHost}:4000`,
-        POSTGREST_SERVER: "",
+        POSTGREST_SERVER: "localhost:5432",
         ITA_SERVER: "",
         UPLOADS_HOST: `https://${localDevHost}:4000`
       });
@@ -285,7 +287,7 @@ module.exports = async (env, argv) => {
     // .replaceAll("connect-src", "connect-src https://example.com");
   }
 
-  const internalHostname = process.env.INTERNAL_HOSTNAME || "hubs.local";
+  const internalHostname = process.env.INTERNAL_HOSTNAME || "localhost";
   return {
     cache: {
       type: "filesystem"

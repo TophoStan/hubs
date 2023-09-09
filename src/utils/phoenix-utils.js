@@ -130,6 +130,7 @@ export async function connectToReticulum(debug = false, params = null, socketCla
   const getNewSocketUrl = async () => {
     await refreshDirectReticulumHostAndPort();
     const { host, port } = directReticulumHostAndPort;
+    //TODO BEKIJK DIT
     const protocol =
       qs.get("phx_protocol") ||
       configs.RETICULUM_SOCKET_PROTOCOL ||
