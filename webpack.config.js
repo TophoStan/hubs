@@ -17,11 +17,13 @@ const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 function createHTTPSConfig() {
   // Generate certs for the local webpack-dev-server.
   if (fs.existsSync(path.join(__dirname, "certs"))) {
-    const key = fs.readFileSync(path.join(__dirname, "certs", "key.pem"));
-    const cert = fs.readFileSync(path.join(__dirname, "certs", "cert.pem"));
+    console.log("CERTS FOUND");
+    const key = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.key")).toString().replace("\\n", "\n");
+    const cert = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.crt")).toString().replace("\\n", "\n");
 
     return { key, cert };
   } else {
+    console.log("CERTS NOT FOUND");
     const pems = selfsigned.generate(
       [
         {

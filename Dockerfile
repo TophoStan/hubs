@@ -23,6 +23,7 @@ COPY . .
 
 EXPOSE 8080
 
+# RUN security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain certs/hubs.crt
 
 
 CMD ["npm", "run", "local"]

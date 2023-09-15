@@ -203,6 +203,7 @@ export function fetchReticulumAuthenticated(url, method = "GET", payload) {
 }
 
 export async function createAndRedirectToNewHub(name, sceneId, replace) {
+  console.log("CREATING Room");
   const createUrl = getReticulumFetchUrl("/api/v1/hubs");
   const payload = { hub: { name: name || generateHubName() } };
 
