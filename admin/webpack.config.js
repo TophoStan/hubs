@@ -11,6 +11,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 function createHTTPSConfig() {
   // Generate certs for the local webpack-dev-server.
   if (fs.existsSync(path.join(__dirname, "certs"))) {
+    console.log("Certs found");
     const key = fs.readFileSync(path.join(__dirname, "certs", "key.pem"));
     const cert = fs.readFileSync(path.join(__dirname, "certs", "cert.pem"));
 
@@ -78,7 +79,7 @@ module.exports = (env, argv) => {
       NON_CORS_PROXY_DOMAINS: "hubs.local,dev.reticulum.io, localhost",
       BASE_ASSETS_PATH: "https://localhost:8989/",
       RETICULUM_SERVER: "localhost:4000",
-      POSTGREST_SERVER: "",
+      POSTGREST_SERVER: "db",
       ITA_SERVER: "turkey",
       TIER: "p1"
     });
