@@ -12,11 +12,13 @@ function createHTTPSConfig() {
   // Generate certs for the local webpack-dev-server.
   if (fs.existsSync(path.join(__dirname, "certs"))) {
     console.log("Certs found");
-    const key = fs.readFileSync(path.join(__dirname, "certs", "key.pem"));
-    const cert = fs.readFileSync(path.join(__dirname, "certs", "cert.pem"));
+    const key = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.key")).toString().replace("\\n", "\n");
+    const cert = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.crt")).toString().replace("\\n", "\n");
+
 
     return { key, cert };
   } else {
+    console.log("Certs NOT found");
     const pems = selfsigned.generate(
       [
         {
@@ -76,11 +78,11 @@ module.exports = (env, argv) => {
       HOST: "localhost",
       RETICULUM_SOCKET_SERVER: "localhost",
       CORS_PROXY_SERVER: "localhost:4000",
-      NON_CORS_PROXY_DOMAINS: "hubs.local,dev.reticulum.io, localhost",
+      NON_CORS_PROXY_DOMAINS: "hubs.local,dev.reticulum.io,localhost",
       BASE_ASSETS_PATH: "https://localhost:8989/",
       RETICULUM_SERVER: "localhost:4000",
-      POSTGREST_SERVER: "db",
-      ITA_SERVER: "turkey",
+      POSTGREST_SERVER: "localhost:5432",
+      ITA_SERVER: "",
       TIER: "p1"
     });
   }
