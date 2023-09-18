@@ -77,8 +77,8 @@ module.exports = (env, argv) => {
     Object.assign(process.env, {
       HOST: "localhost",
       RETICULUM_SOCKET_SERVER: "localhost",
-      CORS_PROXY_SERVER: "localhost:4000",
-      NON_CORS_PROXY_DOMAINS: "hubs.local,dev.reticulum.io,localhost",
+      CORS_PROXY_SERVER: "https://localhost:4000",
+      NON_CORS_PROXY_DOMAINS: "hubs.local,dev.reticulum.io, localhost",
       BASE_ASSETS_PATH: "https://localhost:8989/",
       RETICULUM_SERVER: "localhost:4000",
       POSTGREST_SERVER: "localhost:5432",
@@ -141,13 +141,13 @@ module.exports = (env, argv) => {
       },
       host: process.env.HOST_IP || "0.0.0.0",
       port: process.env.PORT || "8989",
-      allowedHosts: [host, internalHostname],
+      allowedHosts: [host, internalHostname, "localhost:4000"],
       headers: {
         "Access-Control-Allow-Origin": "*"
       },
       setupMiddlewares: (middlewares, { app }) => {
         // be flexible with people accessing via a local reticulum on another port
-        app.use(cors({ origin: /hubs\.local(:\d*)?$/ }));
+        app.use(cors({ origin: /localhost(:\d*)?$/ }));
         return middlewares;
       }
     },
