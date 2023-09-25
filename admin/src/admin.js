@@ -175,6 +175,7 @@ class AdminUI extends Component {
 
 import { IntlProvider } from "react-intl";
 import { lang, messages } from "./utils/i18n";
+import { config } from "process";
 
 const mountUI = async (retPhxChannel, customRoutes, layout) => {
   let dataProvider;
@@ -189,7 +190,7 @@ const mountUI = async (retPhxChannel, customRoutes, layout) => {
     dataProvider = postgrestClient(configs.POSTGREST_SERVER);
     authProvider = postgrestAuthenticatior.createAuthProvider(retPhxChannel);
     await postgrestAuthenticatior.refreshPermsToken();
-
+    console.log(`POSTGREST_SERVER ${configs.POSTGREST_SERVER}`);
     // Refresh perms regularly
     permsTokenRefreshInterval = setInterval(() => postgrestAuthenticatior.refreshPermsToken(), 60000);
   } else {

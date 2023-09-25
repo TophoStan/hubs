@@ -156,6 +156,8 @@ class ImportContentComponent extends Component {
       const url = urls[i];
 
       if (url.endsWith(".pack")) {
+        console.log(`url:${url}`);
+        console.log(`CORS_PROXY_SERVER:${configs.CORS_PROXY_SERVER}`);
         const res = await fetch(`https://${configs.CORS_PROXY_SERVER}/${url}`);
         const packUrls = (await res.text()).split("\n");
         for (const u of packUrls) {

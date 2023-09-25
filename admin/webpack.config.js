@@ -77,11 +77,11 @@ module.exports = (env, argv) => {
     Object.assign(process.env, {
       HOST: "localhost",
       RETICULUM_SOCKET_SERVER: "localhost",
-      CORS_PROXY_SERVER: "https://localhost:4000",
+      CORS_PROXY_SERVER: "localhost:4000",
       NON_CORS_PROXY_DOMAINS: "hubs.local,dev.reticulum.io, localhost",
       BASE_ASSETS_PATH: "https://localhost:8989/",
       RETICULUM_SERVER: "localhost:4000",
-      POSTGREST_SERVER: "localhost:5432",
+      POSTGREST_SERVER: "https://localhost:4000/api/postgrest",
       ITA_SERVER: "",
       TIER: "p1"
     });

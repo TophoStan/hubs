@@ -191,7 +191,7 @@ async function fetchAppConfigAndEnvironmentVars() {
 
   process.env.RETICULUM_SERVER = host;
   process.env.SHORTLINK_DOMAIN = shortlink_domain;
-  process.env.CORS_PROXY_SERVER = `https://localhost:4000/`;
+  process.env.CORS_PROXY_SERVER = `localhost:4000/`;
   process.env.THUMBNAIL_SERVER = thumbnail_server;
   process.env.NON_CORS_PROXY_DOMAINS = `${localIp},hubs.local,localhost`;
 
@@ -259,11 +259,11 @@ module.exports = async (env, argv) => {
       Object.assign(process.env, {
         HOST: localDevHost,
         RETICULUM_SOCKET_SERVER: localDevHost,
-        CORS_PROXY_SERVER: "https://localhost:4000",
+        CORS_PROXY_SERVER: "localhost:4000",
         NON_CORS_PROXY_DOMAINS: `${localDevHost},dev.reticulum.io`,
         BASE_ASSETS_PATH: `https://${localDevHost}:8080/`,
         RETICULUM_SERVER: `${localDevHost}:4000`,
-        POSTGREST_SERVER: "localhost:5432",
+        POSTGREST_SERVER: "https://localhost:4000/api/postgrest",
         ITA_SERVER: "",
         UPLOADS_HOST: `https://${localDevHost}:4000`
       });
