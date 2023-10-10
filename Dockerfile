@@ -3,6 +3,8 @@ FROM node:alpine
 
 WORKDIR /app
 
+ENV FEATURES=text_chat
+
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
@@ -23,7 +25,6 @@ COPY . .
 
 EXPOSE 8080
 
-# RUN security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain certs/hubs.crt
 
 
 CMD ["npm", "run", "local"]

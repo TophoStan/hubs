@@ -1,0 +1,111 @@
+# db-deployment
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: db
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: db
+    template:
+      metadata:
+        labels:
+          app: db
+      spec:
+        containers:
+          - name: postgres
+            image: acrhubs.azurecr.io/postgres
+            env:
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "ret_dev"
+---
+# db-service
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: db
+  spec:
+    ports:
+      - port: 5432
+    selector:
+      app: db
+---
+# reticulum-deployment
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: reticulum
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: reticulum
+    template:
+      metadata:
+        labels:
+          app: reticulum
+      spec:
+        containers:
+        - name: reticulum
+          image: acrhubs.azurecr.io/local-reticulum
+          env:
+            - name: HUBS_CLIENT_INTERNAL_HOSTNAME
+              value: hubs
+            - name: HUBS_SERVICE_NAME
+              value: hubs
+---
+# reticulum-service
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: reticulum
+  spec:
+    type: LoadBalancer
+    ports:
+      - port: 4000
+        targetPort: 4000  
+    selector:
+      app: reticulum
+---
+# hubs-deployment
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: hubs
+  spec:
+    selector:
+      matchLabels:
+        app: hubs
+    template:
+      metadata:
+        labels:
+          app: hubs
+      spec:
+        containers:
+        - name: hubs
+          image: acrhubs.azurecr.io/local-hubs
+          env:
+            - name: RETICULUM_SERVER
+              value: reticulum
+            - name: HOST_IP
+              value: "20.61.132.17"
+            - name: INTERNAL_HOSTNAME
+              value: hubs
+---
+# hubs-service
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: hubs
+  spec:
+    type: LoadBalancer
+    ports:
+      - port: 8080
+        targetPort: 8080
+    selector:
+      app: hubs

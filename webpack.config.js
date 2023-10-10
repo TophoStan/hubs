@@ -253,7 +253,7 @@ module.exports = async (env, argv) => {
     }
 
     if (env.localDev) {
-      const localDevHost = "localhost";
+      const localDevHost = process.env.HOST_IP || "localhost";
       // Local Dev Environment (npm run local)
       console.log("Using local dev environment");
       Object.assign(process.env, {
