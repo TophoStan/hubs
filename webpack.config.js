@@ -14,53 +14,57 @@ const packageLock = require("./package-lock.json");
 const request = require("request");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
-function createHTTPSConfig() {
+function createHTTPSConfig(isHosted = true) {
   // Generate certs for the local webpack-dev-server.
-  if (fs.existsSync(path.join(__dirname, "certs"))) {
-    console.log("CERTS FOUND!!!");
-    const key = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.key")).toString().replace("\\n", "\n");
-    const cert = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.crt")).toString().replace("\\n", "\n");
-
-    return { key, cert };
+  if(isHosted) {
+    console.log("Not making certs for hosted mode");
   } else {
-    console.log("CERTS NOT FOUND");
-    const pems = selfsigned.generate(
-      [
-        {
-          name: "commonName",
-          value: "localhost"
-        }
-      ],
-      {
-        days: 365,
-        keySize: 2048,
-        algorithm: "sha256",
-        extensions: [
+    if (fs.existsSync(path.join(__dirname, "certs"))) {
+      console.log("CERTS FOUND!!!");
+      const key = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.key")).toString().replace("\\n", "\n");
+      const cert = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.crt")).toString().replace("\\n", "\n");
+  
+      return { key, cert };
+    } else {
+      console.log("CERTS NOT FOUND");
+      const pems = selfsigned.generate(
+        [
           {
-            name: "subjectAltName",
-            altNames: [
-              {
-                type: 2,
-                value: "localhost"
-              },
-              {
-                type: 2,
-                value: "hubs.local"
-              }
-            ]
+            name: "commonName",
+            value: "localhost"
           }
-        ]
-      }
-    );
-
-    fs.mkdirSync(path.join(__dirname, "certs"));
-    fs.writeFileSync(path.join(__dirname, "certs", "cert.pem"), pems.cert);
-    fs.writeFileSync(path.join(__dirname, "certs", "key.pem"), pems.private);
-
-    return {
-      key: pems.private,
-      cert: pems.cert
-    };
+        ],
+        {
+          days: 365,
+          keySize: 2048,
+          algorithm: "sha256",
+          extensions: [
+            {
+              name: "subjectAltName",
+              altNames: [
+                {
+                  type: 2,
+                  value: "localhost"
+                },
+                {
+                  type: 2,
+                  value: "hubs.local"
+                }
+              ]
+            }
+          ]
+        }
+      );
+  
+      fs.mkdirSync(path.join(__dirname, "certs"));
+      fs.writeFileSync(path.join(__dirname, "certs", "cert.pem"), pems.cert);
+      fs.writeFileSync(path.join(__dirname, "certs", "key.pem"), pems.private);
+  
+      return {
+        key: pems.private,
+        cert: pems.cert
+      };
+    }
   }
 }
 
@@ -254,19 +258,22 @@ module.exports = async (env, argv) => {
 
     if (env.localDev) {
       const localDevHost = process.env.HOST_IP || "localhost";
+      const retHost = process.env.RETICULUM_HOST || "localhost";
       // Local Dev Environment (npm run local)
       console.log("Using local dev environment");
-      Object.assign(process.env, {
+      const envVars = {
         HOST: localDevHost,
-        RETICULUM_SOCKET_SERVER: localDevHost,
-        CORS_PROXY_SERVER: "localhost:4000",
-        NON_CORS_PROXY_DOMAINS: `${localDevHost},dev.reticulum.io`,
-        BASE_ASSETS_PATH: `https://${localDevHost}:8080/`,
-        RETICULUM_SERVER: `${localDevHost}:4000`,
+        RETICULUM_SOCKET_SERVER: retHost,
+        CORS_PROXY_SERVER: `https://mouseparts.eu/ `,
+        NON_CORS_PROXY_DOMAINS: `${localDevHost},dev.reticulum.io, https://mouseparts.eu/`,
+        BASE_ASSETS_PATH: `${localDevHost}:8080/`,
+        RETICULUM_SERVER: `${retHost}:4000`,
         POSTGREST_SERVER: "https://localhost:4000/api/postgrest",
         ITA_SERVER: "",
-        UPLOADS_HOST: `https://${localDevHost}:4000`
-      });
+        UPLOADS_HOST: `https://${retHost}:4000`
+      }
+
+      Object.assign(process.env, envVars);
     }
   }
 
