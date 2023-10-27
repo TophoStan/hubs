@@ -103,6 +103,7 @@ import { usePermissions } from "./room/hooks/usePermissions";
 import { ChatContextProvider } from "./room/contexts/ChatContext";
 import ChatToolbarButton from "./room/components/ChatToolbarButton/ChatToolbarButton";
 import SeePlansCTA from "./room/components/SeePlansCTA/SeePlansCTA";
+import toggleHubsFeatures from "../custom/featureToggle";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 
@@ -121,6 +122,8 @@ async function grantedMicLabels() {
 const isMobile = AFRAME.utils.device.isMobile();
 const isMobileVR = AFRAME.utils.device.isMobileVR();
 const AUTO_EXIT_TIMER_SECONDS = 10;
+
+
 
 class UIRoot extends Component {
   willCompileAndUploadMaterials = false;
@@ -474,7 +477,9 @@ class UIRoot extends Component {
   };
 
   onLoadingFinished = () => {
-    console.log("UI root loading has finished");
+    console.log(`UI root loading has finished and this feature will be enabled ${configs.FEATURES_TO_ENABLE}`);
+    console.log(`UI root loading has finished and this feature will be enabled ${process.env.FEATURES_TO_ENABLE}`);
+    console.log(configs);
     this.setState({ noMoreLoadingUpdates: true });
     this.props.scene.emit("loading_finished");
 
@@ -1627,6 +1632,7 @@ class UIRoot extends Component {
                         {!isLockedDownDemo && (
                           <>
                             <AudioPopoverButtonContainer scene={this.props.scene} />
+                            
                             <SharePopoverContainer scene={this.props.scene} hubChannel={this.props.hubChannel} />
                             <PlacePopoverContainer
                               scene={this.props.scene}
@@ -1636,7 +1642,7 @@ class UIRoot extends Component {
                             />
                           </>
                         )}
-                        {this.props.hubChannel.can("spawn_emoji") && (
+                        {(this.props.hubChannel.can("spawn_emoji") && toggleHubsFeatures('create_emoji', configs.FEATURES_TO_ENABLE)) && (
                           <ReactionPopoverContainer
                             scene={this.props.scene}
                             initialPresence={getPresenceProfileForSession(this.props.presences, this.props.sessionId)}
@@ -1644,7 +1650,7 @@ class UIRoot extends Component {
                         )}
                       </>
                     )}
-                    {!isLockedDownDemo && (
+                    {(!isLockedDownDemo && toggleHubsFeatures('text_chat', configs.FEATURES_TO_ENABLE)) && (
                       <ChatToolbarButton
                         onClick={() => this.toggleSidebar("chat", { chatPrefix: "", chatAutofocus: false })}
                         selected={this.state.sidebarId === "chat"}

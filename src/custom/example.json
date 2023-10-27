@@ -1,0 +1,47 @@
+{
+    "RETICULUM_SERVER": "mouseparts.eu",
+    "THUMBNAIL_SERVER": "nearspark.reticulum.io",
+    "CORS_PROXY_SERVER": "cors.mouseparts.eu",
+    "NON_CORS_PROXY_DOMAINS": "mouseparts.eu,assets.mouseparts.eu",
+    "SENTRY_DSN": "",
+    "GA_TRACKING_ID": "",
+    "SHORTLINK_DOMAIN": "mouseparts.eu/link",
+    "BASE_ASSETS_PATH": "https://assets.mouseparts.eu/hubs/",
+    "FEATURES_TO_ENABLE": "nothing",
+    "IS_LOCAL_OR_CUSTOM_CLIENT": false,
+    "AVAILABLE_INTEGRATIONS": {
+        "youtube_videos": false,
+        "twitter": false,
+        "twitch": false,
+        "tenor": true,
+        "sketchfab": true,
+        "bing_videos": false,
+        "bing_images": false
+    },
+    "APP_CONFIG": {
+        "translations": {
+            "en": {
+                "share-hashtag": "CR7",
+                "settings.community": "PSV de beste",
+                "contact-email": "johndoe@mail.com",
+                "company-name": "Boldly-XR",
+                "app-tagline": "Super cool",
+                "app-name": "Mouseparts Hubs",
+                "app-description": "The most amazing hubs server known to mankind"
+            }
+        },
+        "images": {
+            "logo_dark": "https://mouseparts.eu/files/5ec86ffe-4ad7-43fd-a9df-1eaa8cddcd54.gif",
+            "logo": "https://mouseparts.eu/files/71aa6ae0-d0fd-42e9-a2fe-a1133b770566.gif",
+            "home_background": "https://mouseparts.eu/files/a9db4203-215a-4a76-b809-254475aa68b6.gif",
+            "favicon": "https://mouseparts.eu/files/2b110114-3691-4aef-bff7-e3f4bf77d306.gif",
+            "company_logo": "https://mouseparts.eu/files/8e8958a3-582b-4592-bec2-8e2d1ea70b1a.gif",
+            "app_thumbnail": "https://mouseparts.eu/files/43bf3196-199c-4c07-986a-888f75765053.gif",
+            "app_icon": "https://mouseparts.eu/files/b7ae6aa5-948b-4ebc-93d2-c0fff34e22ce.gif"
+        },
+        "features": {
+            "max_room_size": 50,
+            "default_room_size": 24
+        }
+    }
+}

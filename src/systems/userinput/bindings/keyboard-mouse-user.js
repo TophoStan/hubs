@@ -2,6 +2,8 @@ import { paths } from "../paths";
 import { sets } from "../sets";
 import { xforms } from "./xforms";
 import { addSetsToBindings } from "./utils";
+import configs from "../../../utils/configs";
+import toggleHubsFeatures from "../../../custom/featureToggle";
 
 // import { Pose } from "../pose";
 
@@ -210,7 +212,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       },
       xform: xforms.rising
     },
-    {
+    toggleHubsFeatures("text_chat", configs.FEATURES_TO_ENABLE) ? {
       src: {
         value: paths.device.keyboard.key("t")
       },
@@ -218,8 +220,9 @@ export const keyboardMouseUserBindings = addSetsToBindings({
         value: paths.actions.focusChat
       },
       xform: xforms.rising
-    },
-    {
+    } : {},
+
+    toggleHubsFeatures("text_chat", configs.FEATURES_TO_ENABLE) ? {
       src: {
         value: paths.device.keyboard.key("/")
       },
@@ -227,7 +230,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
         value: paths.actions.focusChatCommand
       },
       xform: xforms.rising
-    },
+    } : {},
     {
       src: { value: paths.device.keyboard.key("Escape") },
       dest: { value: paths.actions.mediaExit },
