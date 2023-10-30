@@ -1634,7 +1634,7 @@ class UIRoot extends Component {
                             {toggleHubsFeatures('voice_chat', configs.FEATURES_TO_ENABLE) ? <AudioPopoverButtonContainer scene={this.props.scene} /> : null}
 
 
-                            <SharePopoverContainer scene={this.props.scene} hubChannel={this.props.hubChannel} />
+                            {toggleHubsFeatures('share', configs.FEATURES_TO_ENABLE) ? <SharePopoverContainer scene={this.props.scene} hubChannel={this.props.hubChannel} /> : null}
                             <PlacePopoverContainer
                               scene={this.props.scene}
                               hubChannel={this.props.hubChannel}
