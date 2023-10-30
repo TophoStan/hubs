@@ -11,11 +11,14 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 function createHTTPSConfig() {
   // Generate certs for the local webpack-dev-server.
   if (fs.existsSync(path.join(__dirname, "certs"))) {
-    const key = fs.readFileSync(path.join(__dirname, "certs", "key.pem"));
-    const cert = fs.readFileSync(path.join(__dirname, "certs", "cert.pem"));
+    console.log("Certs found");
+    const key = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.key")).toString().replace("\\n", "\n");
+    const cert = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.crt")).toString().replace("\\n", "\n");
+
 
     return { key, cert };
   } else {
+    console.log("Certs NOT found");
     const pems = selfsigned.generate(
       [
         {
@@ -36,7 +39,7 @@ function createHTTPSConfig() {
               },
               {
                 type: 2,
-                value: "hubs.local"
+                value: "localhost"
               }
             ]
           }
@@ -72,22 +75,22 @@ module.exports = (env, argv) => {
 
   if (env.local) {
     Object.assign(process.env, {
-      HOST: "hubs.local",
-      RETICULUM_SOCKET_SERVER: "hubs.local",
-      CORS_PROXY_SERVER: "hubs-proxy.local:4000",
-      NON_CORS_PROXY_DOMAINS: "hubs.local,dev.reticulum.io",
-      BASE_ASSETS_PATH: "https://hubs.local:8989/",
-      RETICULUM_SERVER: "hubs.local:4000",
-      POSTGREST_SERVER: "",
-      ITA_SERVER: "turkey",
+      HOST: "localhost",
+      RETICULUM_SOCKET_SERVER: "localhost",
+      CORS_PROXY_SERVER: "localhost:4000",
+      NON_CORS_PROXY_DOMAINS: "hubs.local,dev.reticulum.io, localhost",
+      BASE_ASSETS_PATH: "https://localhost:8989/",
+      RETICULUM_SERVER: "localhost:4000",
+      POSTGREST_SERVER: "https://localhost:4000/api/postgrest",
+      ITA_SERVER: "",
       TIER: "p1"
     });
   }
 
-  const defaultHostName = "hubs.local";
+  const defaultHostName = "localhost";
   const host = process.env.HOST_IP || defaultHostName;
 
-  const internalHostname = process.env.INTERNAL_HOSTNAME || "hubs.local";
+  const internalHostname = process.env.INTERNAL_HOSTNAME || "localhost";
   return {
     cache: {
       type: "filesystem"
@@ -138,13 +141,13 @@ module.exports = (env, argv) => {
       },
       host: process.env.HOST_IP || "0.0.0.0",
       port: process.env.PORT || "8989",
-      allowedHosts: [host, internalHostname],
+      allowedHosts: [host, internalHostname, "localhost:4000"],
       headers: {
         "Access-Control-Allow-Origin": "*"
       },
       setupMiddlewares: (middlewares, { app }) => {
         // be flexible with people accessing via a local reticulum on another port
-        app.use(cors({ origin: /hubs\.local(:\d*)?$/ }));
+        app.use(cors({ origin: /localhost(:\d*)?$/ }));
         return middlewares;
       }
     },

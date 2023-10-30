@@ -60,6 +60,8 @@ export function usePaginatedAPI(apiCallback) {
     curApiCallback
       .current(internalState.cursor)
       .then(response => {
+        console.log("??????");
+        console.log(response);
         if (curApiCallback.current !== caller) {
           return;
         }

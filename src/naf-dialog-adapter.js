@@ -251,6 +251,8 @@ export class DialogAdapter extends EventEmitter {
     this._forceTurn = forceTurn;
     this._iceTransportPolicy = iceTransportPolicy;
 
+    console.log(`SERVERURL:${this._serverUrl}`);
+
     const urlWithParams = new URL(this._serverUrl);
     urlWithParams.searchParams.append("roomId", this._roomId);
     urlWithParams.searchParams.append("peerId", this._clientId);

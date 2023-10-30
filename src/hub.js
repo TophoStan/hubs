@@ -995,6 +995,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   getReticulumMeta().then(reticulumMeta => {
+    console.log(reticulumMeta);
     console.log(`Reticulum @ ${reticulumMeta.phx_host}: v${reticulumMeta.version} on ${reticulumMeta.pool}`);
 
     if (
@@ -1324,6 +1325,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await presenceSync.promise;
       handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data);
     })
+    //ERROR Error
     .receive("error", res => {
       if (res.reason === "closed") {
         entryManager.exitScene();
@@ -1335,7 +1337,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         entryManager.exitScene();
         remountUI({ roomUnavailableReason: ExitReason.denied });
       }
-
+      
       console.error(res);
     });
 
