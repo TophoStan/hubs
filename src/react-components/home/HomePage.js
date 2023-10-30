@@ -61,10 +61,9 @@ export function HomePage() {
               <span>
                 <FormattedMessage
                   id="header.signed-in-as"
-                  defaultMessage="Signed in als {email}"
+                  defaultMessage="Signed in as {email}"
                   values={{ email: maskEmail(email) }}
                 />
-                <p>{process.env.FEATURES}</p>
               </span>
               <a href="#" onClick={auth.signOut} className={styles.mobileSignOut}>
                 <FormattedMessage id="header.sign-out" defaultMessage="Sign Out" />

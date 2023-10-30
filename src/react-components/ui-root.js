@@ -750,7 +750,7 @@ class UIRoot extends Component {
   };
 
   onTweet = ({ detail }) => {
-    handleExitTo2DInterstitial(true, () => {}).then(() => {
+    handleExitTo2DInterstitial(true, () => { }).then(() => {
       this.props.performConditionalSignIn(
         () => this.props.hubChannel.signedIn,
         () => {
@@ -1151,20 +1151,20 @@ class UIRoot extends Component {
         items: [
           this.state.signedIn
             ? {
-                id: "sign-out",
-                label: <FormattedMessage id="more-menu.sign-out" defaultMessage="Sign Out" />,
-                icon: LeaveIcon,
-                onClick: async () => {
-                  await this.props.authChannel.signOut(this.props.hubChannel);
-                  this.setState({ signedIn: false });
-                }
+              id: "sign-out",
+              label: <FormattedMessage id="more-menu.sign-out" defaultMessage="Sign Out" />,
+              icon: LeaveIcon,
+              onClick: async () => {
+                await this.props.authChannel.signOut(this.props.hubChannel);
+                this.setState({ signedIn: false });
               }
+            }
             : {
-                id: "sign-in",
-                label: <FormattedMessage id="more-menu.sign-in" defaultMessage="Sign In" />,
-                icon: EnterIcon,
-                onClick: () => this.showContextualSignInDialog()
-              },
+              id: "sign-in",
+              label: <FormattedMessage id="more-menu.sign-in" defaultMessage="Sign In" />,
+              icon: EnterIcon,
+              onClick: () => this.showContextualSignInDialog()
+            },
           canCreateRoom && {
             id: "create-room",
             label: <FormattedMessage id="more-menu.create-room" defaultMessage="Create Room" />,
@@ -1202,12 +1202,12 @@ class UIRoot extends Component {
             onClick: () => this.setState({ showPrefs: true })
           },
           (this.props.breakpoint === "sm" || this.props.breakpoint === "md") &&
-            isLockedDownDemo && {
-              id: "see-plans",
-              label: <FormattedMessage id="more-menu.see-plans-cta" defaultMessage="See Plans" />,
-              icon: { src: hubsLogo, alt: "Logo" },
-              href: "https://hubs.mozilla.com/#subscribe"
-            }
+          isLockedDownDemo && {
+            id: "see-plans",
+            label: <FormattedMessage id="more-menu.see-plans-cta" defaultMessage="See Plans" />,
+            icon: { src: hubsLogo, alt: "Logo" },
+            href: "https://hubs.mozilla.com/#subscribe"
+          }
         ].filter(item => item)
       },
       {
@@ -1221,48 +1221,48 @@ class UIRoot extends Component {
             onClick: () => this.setSidebar("room-info")
           },
           (this.props.breakpoint === "sm" || this.props.breakpoint === "md") &&
-            (this.props.hub.entry_mode !== "invite" || this.props.hubChannel.can("update_hub")) && {
-              id: "invite",
-              label: <FormattedMessage id="more-menu.invite" defaultMessage="Invite" />,
-              icon: InviteIcon,
-              onClick: () => this.props.scene.emit("action_invite")
-            },
+          (this.props.hub.entry_mode !== "invite" || this.props.hubChannel.can("update_hub")) && {
+            id: "invite",
+            label: <FormattedMessage id="more-menu.invite" defaultMessage="Invite" />,
+            icon: InviteIcon,
+            onClick: () => this.props.scene.emit("action_invite")
+          },
           this.isFavorited()
             ? {
-                id: "unfavorite-room",
-                label: <FormattedMessage id="more-menu.unfavorite-room" defaultMessage="Unfavorite Room" />,
-                icon: StarIcon,
-                onClick: () => this.toggleFavorited()
-              }
+              id: "unfavorite-room",
+              label: <FormattedMessage id="more-menu.unfavorite-room" defaultMessage="Unfavorite Room" />,
+              icon: StarIcon,
+              onClick: () => this.toggleFavorited()
+            }
             : {
-                id: "favorite-room",
-                label: <FormattedMessage id="more-menu.favorite-room" defaultMessage="Favorite Room" />,
-                icon: StarOutlineIcon,
-                onClick: () => this.toggleFavorited()
-              },
+              id: "favorite-room",
+              label: <FormattedMessage id="more-menu.favorite-room" defaultMessage="Favorite Room" />,
+              icon: StarOutlineIcon,
+              onClick: () => this.toggleFavorited()
+            },
           isModerator &&
-            entered && {
-              id: "streamer-mode",
-              label: streaming ? (
-                <FormattedMessage id="more-menu.exit-streamer-mode" defaultMessage="Exit Streamer Mode" />
-              ) : (
-                <FormattedMessage id="more-menu.enter-streamer-mode" defaultMessage="Enter Streamer Mode" />
-              ),
-              icon: CameraIcon,
-              onClick: () => this.toggleStreamerMode()
-            },
+          entered && {
+            id: "streamer-mode",
+            label: streaming ? (
+              <FormattedMessage id="more-menu.exit-streamer-mode" defaultMessage="Exit Streamer Mode" />
+            ) : (
+              <FormattedMessage id="more-menu.enter-streamer-mode" defaultMessage="Enter Streamer Mode" />
+            ),
+            icon: CameraIcon,
+            onClick: () => this.toggleStreamerMode()
+          },
           (this.props.breakpoint === "sm" || this.props.breakpoint === "md") &&
-            entered && {
-              id: "leave-room",
-              label: <FormattedMessage id="more-menu.enter-leave-room" defaultMessage="Leave Room" />,
-              icon: LeaveIcon,
-              onClick: () => {
-                this.showNonHistoriedDialog(LeaveRoomModal, {
-                  destinationUrl: "/",
-                  reason: LeaveReason.leaveRoom
-                });
-              }
-            },
+          entered && {
+            id: "leave-room",
+            label: <FormattedMessage id="more-menu.enter-leave-room" defaultMessage="Leave Room" />,
+            icon: LeaveIcon,
+            onClick: () => {
+              this.showNonHistoriedDialog(LeaveRoomModal, {
+                destinationUrl: "/",
+                reason: LeaveReason.leaveRoom
+              });
+            }
+          },
           canCloseRoom && {
             id: "close-room",
             label: <FormattedMessage id="more-menu.close-room" defaultMessage="Close Room" />,
@@ -1414,27 +1414,27 @@ class UIRoot extends Component {
                     {!this.props.selectedObject && <CompactMoreMenuButton />}
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
-                      <ContentMenu>
-                        {showObjectList && (
-                          <ObjectsMenuButton
-                            active={this.state.sidebarId === "objects"}
-                            onClick={() => this.toggleSidebar("objects")}
+                        <ContentMenu>
+                          {showObjectList && (
+                            <ObjectsMenuButton
+                              active={this.state.sidebarId === "objects"}
+                              onClick={() => this.toggleSidebar("objects")}
+                            />
+                          )}
+                          <PeopleMenuButton
+                            active={this.state.sidebarId === "people"}
+                            disabled={isLockedDownDemo}
+                            onClick={!isLockedDownDemo ? () => this.toggleSidebar("people") : null}
+                            presencecount={this.state.presenceCount}
                           />
-                        )}
-                        <PeopleMenuButton
-                          active={this.state.sidebarId === "people"}
-                          disabled={isLockedDownDemo}
-                          onClick={!isLockedDownDemo ? () => this.toggleSidebar("people") : null}
-                          presencecount={this.state.presenceCount}
-                        />
-                        {showECSObjectsMenuButton && (
-                          <ECSDebugMenuButton
-                            active={this.state.sidebarId === "ecs-debug"}
-                            onClick={() => this.toggleSidebar("ecs-debug")}
-                          />
-                        )}
-                      </ContentMenu>
-                    )}
+                          {showECSObjectsMenuButton && (
+                            <ECSDebugMenuButton
+                              active={this.state.sidebarId === "ecs-debug"}
+                              onClick={() => this.toggleSidebar("ecs-debug")}
+                            />
+                          )}
+                        </ContentMenu>
+                      )}
                     {!entered && !streaming && !isMobile && streamerName && <SpectatingLabel name={streamerName} />}
                     {this.props.activeObject && (
                       <ObjectMenuContainer
@@ -1631,8 +1631,9 @@ class UIRoot extends Component {
                       <>
                         {!isLockedDownDemo && (
                           <>
-                            <AudioPopoverButtonContainer scene={this.props.scene} />
-                            
+                            {toggleHubsFeatures('voice_chat', configs.FEATURES_TO_ENABLE) ? <AudioPopoverButtonContainer scene={this.props.scene} /> : null}
+
+
                             <SharePopoverContainer scene={this.props.scene} hubChannel={this.props.hubChannel} />
                             <PlacePopoverContainer
                               scene={this.props.scene}
@@ -1642,7 +1643,7 @@ class UIRoot extends Component {
                             />
                           </>
                         )}
-                        {(this.props.hubChannel.can("spawn_emoji") && toggleHubsFeatures('create_emoji', configs.FEATURES_TO_ENABLE)) && (
+                        {(this.props.hubChannel.can("spawn_emoji")) && (
                           <ReactionPopoverContainer
                             scene={this.props.scene}
                             initialPresence={getPresenceProfileForSession(this.props.presences, this.props.sessionId)}

@@ -28,6 +28,15 @@ const k = name => {
   return `/keyboard-mouse-user/keyboard-var/${name}`;
 };
 
+const emptyBinding = {
+  src: {
+    value: paths.device.keyboard.key("")
+  },
+  dest: {
+    value: paths.actions.focusChatCommand
+  },
+  xform: xforms.rising
+}
 export const keyboardMouseUserBindings = addSetsToBindings({
   [sets.global]: [
     {
@@ -203,7 +212,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       dest: { value: paths.actions.lobbyCameraDelta },
       xform: xforms.copy
     },
-    {
+    toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE) ? {
       src: {
         value: paths.device.keyboard.key("m")
       },
@@ -211,7 +220,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
         value: paths.actions.muteMic
       },
       xform: xforms.rising
-    },
+    } : emptyBinding,
     toggleHubsFeatures("text_chat", configs.FEATURES_TO_ENABLE) ? {
       src: {
         value: paths.device.keyboard.key("t")
@@ -220,7 +229,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
         value: paths.actions.focusChat
       },
       xform: xforms.rising
-    } : {},
+    } : emptyBinding,
 
     toggleHubsFeatures("text_chat", configs.FEATURES_TO_ENABLE) ? {
       src: {
@@ -230,7 +239,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
         value: paths.actions.focusChatCommand
       },
       xform: xforms.rising
-    } : {},
+    } : emptyBinding,
     {
       src: { value: paths.device.keyboard.key("Escape") },
       dest: { value: paths.actions.mediaExit },
