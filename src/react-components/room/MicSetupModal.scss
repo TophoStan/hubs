@@ -2,6 +2,11 @@
 
 $mobile-breakpoint-width: 450px;
 
+// Efteling - Used to skip the avatar/profile and microphone entry modals (and microphone permissions prompt).
+:local(.modal) {
+  visibility: hidden;
+}
+
 :local(.content) {
   p {
     font-size: theme.$font-size-sm;

@@ -614,13 +614,17 @@ class UIRoot extends Component {
   };
 
   onRequestMicPermission = async () => {
-    if (this.props.canVoiceChat) {
-      await this.mediaDevicesManager.startMicShare({});
+    if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) {
+      if (this.props.canVoiceChat) {
+        await this.mediaDevicesManager.startMicShare({});
+      }
+
     }
   };
 
   beginOrSkipAudioSetup = () => {
     const skipAudioSetup = this.props.forcedVREntryType && this.props.forcedVREntryType.endsWith("_now");
+    skipAudioSetup = toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)
     if (skipAudioSetup) {
       console.log(`Skipping audio setup (forcedVREntryType = ${this.props.forcedVREntryType})`);
       this.onAudioReadyButton();
@@ -843,25 +847,31 @@ class UIRoot extends Component {
           roomName={this.props.hub.name}
           showJoinRoom={!this.state.waitingOnAudio && !this.props.entryDisallowed}
           onJoinRoom={() => {
-            if (isLockedDownDemo) {
-              if (this.props.forcedVREntryType?.startsWith("vr")) {
-                this.setState({ enterInVR: true }, this.onAudioReadyButton);
-                return;
-              }
-              return this.onAudioReadyButton();
-            }
-            if (promptForNameAndAvatarBeforeEntry || !this.props.forcedVREntryType) {
-              this.setState({ entering: true });
-              this.props.hubChannel.sendEnteringEvent();
-              if (promptForNameAndAvatarBeforeEntry) {
-                this.pushHistoryState("entry_step", "profile");
+
+            const modal = document.getElementsByClassName("roomEntryModalClass")[0];
+            modal.classList.add("fadeOut");
+            setTimeout(() => {
+              // if (isLockedDownDemo) {
+              //   if (this.props.forcedVREntryType?.startsWith("vr")) {
+              //     this.setState({ enterInVR: true }, this.onAudioReadyButton);
+              //     return;
+              //   }
+              //   // return this.onAudioReadyButton();
+
+              // }
+              if (promptForNameAndAvatarBeforeEntry || !this.props.forcedVREntryType) {
+                this.setState({ entering: true });
+                this.props.hubChannel.sendEnteringEvent();
+                if (promptForNameAndAvatarBeforeEntry) {
+                  this.pushHistoryState("entry_step", "profile");
+                } else {
+                  if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) this.onRequestMicPermission();
+                  this.pushHistoryState("entry_step", "audio");
+                }
               } else {
-                this.onRequestMicPermission();
-                this.pushHistoryState("entry_step", "audio");
+                this.handleForceEntry();
               }
-            } else {
-              this.handleForceEntry();
-            }
+            }, 1500);
           }}
           showEnterOnDevice={!this.state.waitingOnAudio && !this.props.entryDisallowed && !isMobileVR}
           onEnterOnDevice={() => this.attemptLink()}
@@ -929,7 +939,7 @@ class UIRoot extends Component {
         onEnterRoom={this.onAudioReadyButton}
         onBack={() => this.props.history.goBack()}
       />
-    );
+    )
   };
 
   isInModalOrOverlay = () => {
@@ -1078,6 +1088,7 @@ class UIRoot extends Component {
             {this.renderDevicePanel()}
           </StateRoute>
           <StateRoute stateKey="entry_step" stateValue="audio" history={this.props.history}>
+            {/* Here the audio interface gets rendered before being able to join a room */}
             {this.renderAudioSetupPanel()}
           </StateRoute>
           <StateRoute
@@ -1094,7 +1105,7 @@ class UIRoot extends Component {
                     this.pushHistoryState();
                     this.handleForceEntry();
                   } else {
-                    this.onRequestMicPermission();
+                    if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) this.onRequestMicPermission();
                     this.pushHistoryState("entry_step", "audio");
                   }
                 }}
@@ -1609,12 +1620,14 @@ class UIRoot extends Component {
                   <>
                     {watching && (
                       <>
+
                         <ToolbarButton
                           icon={<EnterIcon />}
                           label={<FormattedMessage id="toolbar.join-room-button" defaultMessage="Join Room" />}
                           preset="accept"
                           onClick={() => this.setState({ watching: false })}
                         />
+
                         {enableSpectateVRButton && (
                           <ToolbarButton
                             icon={<VRIcon />}

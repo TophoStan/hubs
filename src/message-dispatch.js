@@ -12,6 +12,8 @@ import { add, testAsset, respawn } from "./utils/chat-commands";
 import { isLockedDownDemoRoom } from "./utils/hub-utils";
 import { loadState, clearState } from "./utils/entity-state-utils";
 import { shouldUseNewLoader } from "./utils/bit-utils";
+import toggleHubsFeatures from "./custom/featureToggle";
+import configs from "./utils/configs";
 
 let uiRoot;
 // Handles user-entered messages
@@ -98,13 +100,16 @@ export default class MessageDispatch extends EventTarget {
 
     switch (command) {
       case "fly":
-        if (this.scene.systems["hubs-systems"].characterController.fly) {
-          this.scene.systems["hubs-systems"].characterController.enableFly(false);
-          this.log(LogMessageType.flyModeDisabled);
-        } else {
-          if (this.scene.systems["hubs-systems"].characterController.enableFly(true)) {
-            this.log(LogMessageType.flyModeEnabled);
+        if (toggleHubsFeatures("flying", configs.FEATURES_TO_ENABLE)) {
+          if (this.scene.systems["hubs-systems"].characterController.fly) {
+            this.scene.systems["hubs-systems"].characterController.enableFly(false);
+            this.log(LogMessageType.flyModeDisabled);
+          } else {
+            if (this.scene.systems["hubs-systems"].characterController.enableFly(true)) {
+              this.log(LogMessageType.flyModeEnabled);
+            }
           }
+
         }
         break;
       case "grow":

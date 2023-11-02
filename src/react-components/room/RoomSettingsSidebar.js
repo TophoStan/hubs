@@ -16,6 +16,8 @@ import { BackButton } from "../input/BackButton";
 import { SceneInfo } from "./RoomSidebar";
 import { Column } from "../layout/Column";
 import { InviteLinkInputField } from "./InviteLinkInputField";
+import toggleHubsFeatures from "../../custom/featureToggle";
+import configs from "../../utils/configs";
 
 export function RoomSettingsSidebar({
   showBackButton,
@@ -153,14 +155,19 @@ export function RoomSettingsSidebar({
           fullWidth
         >
           <div className={styles.roomPermissions}>
-            <ToggleInput
-              label={<FormattedMessage id="room-settings-sidebar.voice-chat" defaultMessage="Voice chat" />}
-              {...register("member_permissions.voice_chat")}
-            />
-            <ToggleInput
-              label={<FormattedMessage id="room-settings-sidebar.text-chat" defaultMessage="Text chat" />}
-              {...register("member_permissions.text_chat")}
-            />
+            {toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE) ?
+              <ToggleInput
+                label={<FormattedMessage id="room-settings-sidebar.voice-chat" defaultMessage="Voice chat" />}
+                {...register("member_permissions.voice_chat")}
+              /> : null
+            }
+
+            {toggleHubsFeatures("text_chat", configs.FEATURES_TO_ENABLE) ?
+              <ToggleInput
+                label={<FormattedMessage id="room-settings-sidebar.text-chat" defaultMessage="Text chat" />}
+                {...register("member_permissions.text_chat")}
+              /> : null
+            }
             <ToggleInput
               label={
                 <FormattedMessage
@@ -190,10 +197,12 @@ export function RoomSettingsSidebar({
               label={<FormattedMessage id="room-settings-sidebar.spawn-emoji" defaultMessage="Create emoji" />}
               {...register("member_permissions.spawn_emoji")}
             />
-            <ToggleInput
-              label={<FormattedMessage id="room-settings-sidebar.fly" defaultMessage="Allow flying" />}
-              {...register("member_permissions.fly")}
-            />
+            {
+              toggleHubsFeatures("flying", configs.FEATURES_TO_ENABLE) ? <ToggleInput
+                label={<FormattedMessage id="room-settings-sidebar.fly" defaultMessage="Allow flying" />}
+                {...register("member_permissions.fly")}
+              /> : null
+            }
           </div>
         </InputField>
         <ApplyButton type="submit" />

@@ -15,6 +15,8 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { PermissionStatus } from "../../utils/media-devices-utils";
 import { Spinner } from "../misc/Spinner";
 import { ToolTip } from "@mozilla/lilypad-ui";
+import toggleHubsFeatures from "../../custom/featureToggle";
+import configs from "../../utils/configs";
 
 export const titleMessages = defineMessages({
   microphoneSetup: {
@@ -47,13 +49,18 @@ export function MicSetupModal({
   canVoiceChat,
   ...rest
 }) {
+
+
+  if (!(toggleHubsFeatures('voice_chat', configs.FEATURES_TO_ENABLE))) { onEnterRoom(); }
+
+
   const iconStyle = isMicrophoneEnabled ? styles.iconEnabled : styles.iconDisabled;
   const intl = useIntl();
   return (
     <Modal
       title={intl.formatMessage(titleMessages[canVoiceChat ? "microphoneSetup" : "audioSetup"])}
       beforeTitle={<BackButton onClick={onBack} />}
-      className={className}
+      className={styles.modal}
       {...rest}
     >
       <Column center padding grow className={styles.content}>
@@ -139,19 +146,19 @@ export function MicSetupModal({
                 )}
               </>
             )) || (
-              <div className={styles.voiceChatDisabled}>
-                <MicrophoneMutedIcon className={styles.iconDisabled} />
-                <p className={styles.textDisabled}>
-                  <FormattedMessage
-                    id="mic-setup-modal.voice-chat-disabled"
-                    defaultMessage="Voice chat is <bold>turned off</bold> for this room."
-                    values={{
-                      bold: str => <b>{str}</b>
-                    }}
-                  />
-                </p>
-              </div>
-            )}
+                <div className={styles.voiceChatDisabled}>
+                  <MicrophoneMutedIcon className={styles.iconDisabled} />
+                  <p className={styles.textDisabled}>
+                    <FormattedMessage
+                      id="mic-setup-modal.voice-chat-disabled"
+                      defaultMessage="Voice chat is <bold>turned off</bold> for this room."
+                      values={{
+                        bold: str => <b>{str}</b>
+                      }}
+                    />
+                  </p>
+                </div>
+              )}
           </div>
           <div className={styles.audioIoContainer}>
             <div className={styles.iconContainer}>

@@ -18,8 +18,8 @@ function createHTTPSConfig() {
   // Generate certs for the local webpack-dev-server.
   if (fs.existsSync(path.join(__dirname, "certs"))) {
     console.log("CERTS FOUND!!!");
-    const key = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.key")).toString().replace("\\n", "\n");
-    const cert = fs.readFileSync(path.join(__dirname, "certs", "localhost_hubs.crt")).toString().replace("\\n", "\n");
+    const key = fs.readFileSync(path.join(__dirname, "certs", "localhost-key.pem")).toString().replace("\\n", "\n");
+    const cert = fs.readFileSync(path.join(__dirname, "certs", "localhost.pem")).toString().replace("\\n", "\n");
 
     return { key, cert };
   } else {
@@ -206,9 +206,7 @@ function htmlPagePlugin({ filename, extraChunks = [], chunksSortMode, inject }) 
     chunks: [...extraChunks, chunkName],
     // TODO we still have some things that depend on execution order, mostly aframe element API
     scriptLoading: "blocking",
-    minify: {
-      removeComments: false
-    }
+    minify: false
   };
 
   if (chunksSortMode) options.chunksSortMode = chunksSortMode;
@@ -357,7 +355,7 @@ module.exports = async (env, argv) => {
       port: 8080,
       allowedHosts: [host, internalHostname],
       headers: devServerHeaders,
-      hot: liveReload,
+      hot: true,
       liveReload: liveReload,
       historyApiFallback: {
         rewrites: [
@@ -589,6 +587,7 @@ module.exports = async (env, argv) => {
       ]
     },
     optimization: {
+      minimize: false,
       splitChunks: {
         maxAsyncRequests: 10,
         maxInitialRequests: 10,

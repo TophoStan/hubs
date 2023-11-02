@@ -108,11 +108,11 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       dest: { value: paths.actions.snapRotateLeft },
       xform: xforms.rising
     },
-    {
+    toggleHubsFeatures("flying", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.keyboard.key("g") },
       dest: { value: paths.actions.toggleFly },
       xform: xforms.rising
-    },
+    } : emptyBinding,
     {
       src: { value: paths.device.keyboard.key("`") },
       dest: { value: paths.actions.toggleUI },
@@ -367,7 +367,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       },
       xform: xforms.rising
     },
-    {
+    toggleHubsFeatures("teleport", configs.FEATURES_TO_ENABLE) ? {
       src: {
         value: paths.device.mouse.buttonRight
       },
@@ -376,8 +376,9 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       },
       xform: xforms.rising,
       priority: 100
-    },
-    {
+    } : emptyBinding,
+
+    toggleHubsFeatures("teleport", configs.FEATURES_TO_ENABLE) ? {
       src: {
         value: paths.device.mouse.buttonRight
       },
@@ -386,7 +387,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       },
       xform: xforms.falling,
       priority: 100
-    },
+    } : emptyBinding,
     {
       src: { value: paths.device.keyboard.key("o") },
       dest: { value: paths.actions.nextCameraMode },
