@@ -2,6 +2,9 @@ import { paths } from "../paths";
 import { sets } from "../sets";
 import { xforms } from "./xforms";
 import { addSetsToBindings } from "./utils";
+import toggleHubsFeatures from "../../../custom/featureToggle";
+import configs from "../../../utils/configs";
+
 
 const zero = "/vars/touchscreen/zero";
 const forward = "/vars/touchscreen/pinchDeltaForward";
@@ -15,6 +18,16 @@ const gyroCamDelta = "vars/gyro/gyroCameraDelta";
 const gyroCamDeltaXScaled = "vars/gyro/gyroCameraDelta/x/scaled";
 const gyroCamDeltaYScaled = "vars/gyro/gyroCameraDelta/y/scaled";
 const togglePen = "/vars/touchscreen/togglePen";
+
+const emptyBinding = {
+  src: {
+    value: paths.device.keyboard.key("")
+  },
+  dest: {
+    value: paths.actions.focusChatCommand
+  },
+  xform: xforms.rising
+}
 
 export const touchscreenUserBindings = addSetsToBindings({
   [sets.global]: [
@@ -106,17 +119,17 @@ export const touchscreenUserBindings = addSetsToBindings({
       dest: { value: paths.actions.cursor.right.grab },
       xform: xforms.rising
     },
-    {
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.hud.penButton },
       dest: { value: togglePen },
       xform: xforms.rising
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: togglePen },
       dest: { value: paths.actions.spawnPen },
       xform: xforms.rising,
       priority: 2
-    }
+    } : emptyBinding,
   ],
   [sets.rightCursorHoldingInteractable]: [
     {
@@ -129,30 +142,30 @@ export const touchscreenUserBindings = addSetsToBindings({
 
   [sets.rightCursorHoveringOnPen]: [],
   [sets.rightCursorHoldingPen]: [
-    {
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.touchscreen.isTouchingGrabbable },
       dest: { value: paths.actions.cursor.right.startDrawing },
       xform: xforms.risingWithFrameDelay(5),
       priority: 2
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.touchscreen.isTouchingGrabbable },
       dest: { value: paths.actions.cursor.right.stopDrawing },
       xform: xforms.falling,
       priority: 2
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: togglePen },
       dest: { value: paths.actions.cursor.right.drop },
       xform: xforms.rising,
       priority: 3
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: togglePen },
       dest: { value: paths.actions.pen.remove },
       xform: xforms.rising,
       priority: 3
-    }
+    } : emptyBinding,
   ],
 
   [sets.inspecting]: [

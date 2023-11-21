@@ -57,6 +57,13 @@
   pointer-events: auto;
   z-index: 0;
 }
+:local(.transparenttoolbar){
+  background-color: transparent;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 15;
+}
 
 :local(.modal-container) {
   grid-column: main;

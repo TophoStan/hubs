@@ -189,14 +189,18 @@ export function RoomSettingsSidebar({
                 {...register("member_permissions.pin_objects")}
               />
             </div>
-            <ToggleInput
-              label={<FormattedMessage id="room-settings-sidebar.spawn-drawing" defaultMessage="Create drawings" />}
-              {...register("member_permissions.spawn_drawing")}
-            />
-            <ToggleInput
-              label={<FormattedMessage id="room-settings-sidebar.spawn-emoji" defaultMessage="Create emoji" />}
-              {...register("member_permissions.spawn_emoji")}
-            />
+            {
+              toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? <ToggleInput
+                label={<FormattedMessage id="room-settings-sidebar.spawn-drawing" defaultMessage="Create drawings" />}
+                {...register("member_permissions.spawn_drawing")}
+              /> : null
+            }
+            {
+              toggleHubsFeatures("react", configs.FEATURES_TO_ENABLE) ? <ToggleInput
+                label={<FormattedMessage id="room-settings-sidebar.spawn-emoji" defaultMessage="Create emoji" />}
+                {...register("member_permissions.spawn_emoji")}
+              /> : null
+            }
             {
               toggleHubsFeatures("flying", configs.FEATURES_TO_ENABLE) ? <ToggleInput
                 label={<FormattedMessage id="room-settings-sidebar.fly" defaultMessage="Allow flying" />}

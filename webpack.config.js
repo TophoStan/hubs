@@ -18,8 +18,8 @@ function createHTTPSConfig() {
   // Generate certs for the local webpack-dev-server.
   if (fs.existsSync(path.join(__dirname, "certs"))) {
     console.log("CERTS FOUND!!!");
-    const key = fs.readFileSync(path.join(__dirname, "certs", "localhost-key.pem")).toString().replace("\\n", "\n");
-    const cert = fs.readFileSync(path.join(__dirname, "certs", "localhost.pem")).toString().replace("\\n", "\n");
+    const key = fs.readFileSync(path.join(__dirname, "certs", "hubs.local-key.pem")).toString().replace("\\n", "\n");
+    const cert = fs.readFileSync(path.join(__dirname, "certs", "hubs.local.pem")).toString().replace("\\n", "\n");
 
     return { key, cert };
   } else {
@@ -153,7 +153,7 @@ async function fetchAppConfigAndEnvironmentVars() {
   }
 
   const { host, token } = JSON.parse(fs.readFileSync(".ret.credentials"));
-
+  console.log(`Retrieved credentials`);
   const headers = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json"
@@ -191,9 +191,10 @@ async function fetchAppConfigAndEnvironmentVars() {
 
   process.env.RETICULUM_SERVER = host;
   process.env.SHORTLINK_DOMAIN = shortlink_domain;
-  process.env.CORS_PROXY_SERVER = `localhost:4000/`;
+  process.env.CORS_PROXY_SERVER = `hubs.local:8080/cors-proxy`;
   process.env.THUMBNAIL_SERVER = thumbnail_server;
   process.env.NON_CORS_PROXY_DOMAINS = `${localIp},hubs.local,localhost`;
+  process.env.FEATURES_TO_ENABLE = '';
 
   return appConfig;
 }
@@ -206,7 +207,9 @@ function htmlPagePlugin({ filename, extraChunks = [], chunksSortMode, inject }) 
     chunks: [...extraChunks, chunkName],
     // TODO we still have some things that depend on execution order, mostly aframe element API
     scriptLoading: "blocking",
-    minify: false
+    minify: {
+      removeComments: false
+    }
   };
 
   if (chunksSortMode) options.chunksSortMode = chunksSortMode;
@@ -251,17 +254,16 @@ module.exports = async (env, argv) => {
     }
 
     if (env.localDev) {
-      const localDevHost = "localhost";
+      const localDevHost = "hubs.local";
       // Local Dev Environment (npm run local)
-      console.log("Using local dev environment");
       Object.assign(process.env, {
         HOST: localDevHost,
         RETICULUM_SOCKET_SERVER: localDevHost,
-        CORS_PROXY_SERVER: "localhost:4000",
+        CORS_PROXY_SERVER: "hubs-proxy.local:4000",
         NON_CORS_PROXY_DOMAINS: `${localDevHost},dev.reticulum.io`,
         BASE_ASSETS_PATH: `https://${localDevHost}:8080/`,
         RETICULUM_SERVER: `${localDevHost}:4000`,
-        POSTGREST_SERVER: "https://localhost:4000/api/postgrest",
+        POSTGREST_SERVER: "",
         ITA_SERVER: "",
         UPLOADS_HOST: `https://${localDevHost}:4000`
       });
@@ -287,7 +289,7 @@ module.exports = async (env, argv) => {
     // .replaceAll("connect-src", "connect-src https://example.com");
   }
 
-  const internalHostname = process.env.INTERNAL_HOSTNAME || "localhost";
+  const internalHostname = process.env.INTERNAL_HOSTNAME || "hubs.local";
   return {
     cache: {
       type: "filesystem"
@@ -732,6 +734,7 @@ module.exports = async (env, argv) => {
           POSTGREST_SERVER: process.env.POSTGREST_SERVER,
           UPLOADS_HOST: process.env.UPLOADS_HOST,
           BASE_ASSETS_PATH: process.env.BASE_ASSETS_PATH,
+          FEATURES_TO_ENABLE: process.env.FEATURES_TO_ENABLE,
           APP_CONFIG: appConfig
         })
       })

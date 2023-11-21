@@ -51,3 +51,11 @@ body.vr-mode {
   z-index: 11;
   pointer-events: auto;
 }
+
+:local(.transparenttoolbar){
+  background-color: transparent;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 15;
+}

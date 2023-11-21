@@ -51,7 +51,10 @@ export function MicSetupModal({
 }) {
 
 
-  if (!(toggleHubsFeatures('voice_chat', configs.FEATURES_TO_ENABLE))) { onEnterRoom(); }
+  if (!(toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE))) {
+    console.log("Voice chat is disabled. Skipping MicSetupModal.");
+    onEnterRoom();
+  }
 
 
   const iconStyle = isMicrophoneEnabled ? styles.iconEnabled : styles.iconDisabled;
@@ -60,7 +63,7 @@ export function MicSetupModal({
     <Modal
       title={intl.formatMessage(titleMessages[canVoiceChat ? "microphoneSetup" : "audioSetup"])}
       beforeTitle={<BackButton onClick={onBack} />}
-      className={styles.modal}
+      className={styles}
       {...rest}
     >
       <Column center padding grow className={styles.content}>

@@ -15,6 +15,7 @@ import configs from "../../utils/configs";
 import { FormattedMessage } from "react-intl";
 import { anyEntityWith } from "../../utils/bit-utils";
 import { MyCameraTool } from "../../bit-components";
+import toggleHubsFeatures from "../../custom/featureToggle";
 
 export function PlacePopoverContainer({ scene, mediaSearchStore, showNonHistoriedDialog, hubChannel }) {
   const [items, setItems] = useState([]);
@@ -25,22 +26,22 @@ export function PlacePopoverContainer({ scene, mediaSearchStore, showNonHistorie
       const hasActivePen = !!scene.systems["pen-tools"].getMyPen();
 
       let nextItems = [
-        hubChannel.can("spawn_drawing") && {
+        toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? hubChannel.can("spawn_drawing") && {
           id: "pen",
           icon: PenIcon,
           color: "accent5",
           label: <FormattedMessage id="place-popover.item-type.pen" defaultMessage="Pen" />,
           onSelect: () => scene.emit("penButtonPressed"),
           selected: hasActivePen
-        },
-        hubChannel.can("spawn_camera") && {
+        } : null,
+        toggleHubsFeatures("place_camera", configs.FEATURES_TO_ENABLE) ? hubChannel.can("spawn_camera") && {
           id: "camera",
           icon: CameraIcon,
           color: "accent5",
           label: <FormattedMessage id="place-popover.item-type.camera" defaultMessage="Camera" />,
           onSelect: () => scene.emit("action_toggle_camera"),
           selected: hasActiveCamera
-        }
+        } : null
       ];
 
       if (hubChannel.can("spawn_and_move_media")) {
@@ -49,42 +50,42 @@ export function PlacePopoverContainer({ scene, mediaSearchStore, showNonHistorie
           // TODO: Create text/link dialog
           // { id: "text", icon: TextIcon, color: "blue", label: "Text" },
           // { id: "link", icon: LinkIcon, color: "blue", label: "Link" },
-          configs.integration("tenor") && {
+          toggleHubsFeatures("place_gif", configs.FEATURES_TO_ENABLE) ? configs.integration("tenor") && {
             id: "gif",
             icon: GIFIcon,
             color: "accent2",
             label: <FormattedMessage id="place-popover.item-type.gif" defaultMessage="GIF" />,
             onSelect: () => mediaSearchStore.sourceNavigate("gifs")
-          },
-          configs.integration("sketchfab") && {
+          } : null,
+          toggleHubsFeatures("place_model", configs.FEATURES_TO_ENABLE) ? configs.integration("sketchfab") && {
             id: "model",
             icon: ObjectIcon,
             color: "accent2",
             label: <FormattedMessage id="place-popover.item-type.model" defaultMessage="3D Model" />,
             onSelect: () => mediaSearchStore.sourceNavigate("sketchfab")
-          },
-          {
+          } : null,
+          toggleHubsFeatures("place_avatar", configs.FEATURES_TO_ENABLE) ? {
             id: "avatar",
             icon: AvatarIcon,
             color: "accent1",
             label: <FormattedMessage id="place-popover.item-type.avatar" defaultMessage="Avatar" />,
             onSelect: () => mediaSearchStore.sourceNavigate("avatars")
-          },
-          {
+          } : null,
+          toggleHubsFeatures("place_scene", configs.FEATURES_TO_ENABLE) ? {
             id: "scene",
             icon: SceneIcon,
             color: "accent1",
             label: <FormattedMessage id="place-popover.item-type.scene" defaultMessage="Scene" />,
             onSelect: () => mediaSearchStore.sourceNavigate("scenes")
-          },
+          } : null,
           // TODO: Launch system file prompt directly
-          {
+          toggleHubsFeatures("place_upload", configs.FEATURES_TO_ENABLE) ? {
             id: "upload",
             icon: UploadIcon,
             color: "accent3",
             label: <FormattedMessage id="place-popover.item-type.upload" defaultMessage="Upload" />,
             onSelect: () => showNonHistoriedDialog(ObjectUrlModalContainer, { scene })
-          }
+          } : null
         ];
       }
 

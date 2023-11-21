@@ -2,6 +2,8 @@ import { paths } from "../paths";
 import { sets } from "../sets";
 import { xforms } from "./xforms";
 import { addSetsToBindings } from "./utils";
+import toggleHubsFeatures from "../../../custom/featureToggle";
+import configs from "../../../utils/configs";
 
 export default function generate3DOFTriggerBindings(device) {
   const touchpad = device.v("touchpad");
@@ -23,6 +25,16 @@ export default function generate3DOFTriggerBindings(device) {
   const dpadCenterStrip = device.v("dpad/centerStrip");
   const dpadBottomCenterStrip = device.v("dpad/bottomCenterStrip");
   const togglePen = "/vars/oculus-go/togglePen";
+
+  const emptyBinding = {
+    src: {
+      value: paths.device.keyboard.key("")
+    },
+    dest: {
+      value: paths.actions.focusChatCommand
+    },
+    xform: xforms.rising
+  }
 
   const grabBinding = {
     src: {
@@ -278,7 +290,7 @@ export default function generate3DOFTriggerBindings(device) {
         xform: xforms.touch_axis_scroll(1, 0.1),
         priority: 200
       },
-      {
+      toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
         src: {
           value: dpadBottomCenterStrip,
           bool: touchpadFalling
@@ -286,20 +298,20 @@ export default function generate3DOFTriggerBindings(device) {
         dest: { value: togglePen },
         xform: xforms.copyIfTrue,
         priority: 300
-      },
-      {
+      } : emptyBinding,
+      toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
         src: { value: togglePen },
         dest: { value: paths.actions.cursor.right.drop },
         xform: xforms.rising,
         priority: 200
-      },
-      {
+      } : emptyBinding,
+      toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
         src: { value: togglePen },
         dest: { value: paths.actions.pen.remove },
         xform: xforms.rising,
         priority: 200
-      },
-      {
+      } : emptyBinding,
+      toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
         src: {
           value: dpadEast,
           bool: touchpadRising
@@ -309,8 +321,8 @@ export default function generate3DOFTriggerBindings(device) {
         },
         xform: xforms.copyIfTrue,
         priority: 200
-      },
-      {
+      } : emptyBinding,
+      toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
         src: {
           value: dpadWest,
           bool: touchpadRising
@@ -320,8 +332,8 @@ export default function generate3DOFTriggerBindings(device) {
         },
         xform: xforms.copyIfTrue,
         priority: 200
-      },
-      {
+      } : emptyBinding,
+      toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
         src: {
           value: dpadNorth,
           bool: touchpadRising
@@ -331,7 +343,7 @@ export default function generate3DOFTriggerBindings(device) {
         },
         xform: xforms.copyIfTrue,
         priority: 200
-      }
+      } : emptyBinding,
     ],
 
     [sets.rightCursorHoldingCamera]: [

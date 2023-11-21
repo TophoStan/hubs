@@ -103,7 +103,7 @@ import { usePermissions } from "./room/hooks/usePermissions";
 import { ChatContextProvider } from "./room/contexts/ChatContext";
 import ChatToolbarButton from "./room/components/ChatToolbarButton/ChatToolbarButton";
 import SeePlansCTA from "./room/components/SeePlansCTA/SeePlansCTA";
-import toggleHubsFeatures from "../custom/featureToggle";
+import toggleHubsFeatures, { isToolbarEmpty } from "../custom/featureToggle";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 
@@ -865,7 +865,7 @@ class UIRoot extends Component {
                 if (promptForNameAndAvatarBeforeEntry) {
                   this.pushHistoryState("entry_step", "profile");
                 } else {
-                  if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) this.onRequestMicPermission();
+                  if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) { this.onRequestMicPermission() };
                   this.pushHistoryState("entry_step", "audio");
                 }
               } else {
@@ -1105,7 +1105,7 @@ class UIRoot extends Component {
                     this.pushHistoryState();
                     this.handleForceEntry();
                   } else {
-                    if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) this.onRequestMicPermission();
+                    if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) { this.onRequestMicPermission() };
                     this.pushHistoryState("entry_step", "audio");
                   }
                 }}
@@ -1232,12 +1232,12 @@ class UIRoot extends Component {
             onClick: () => this.setSidebar("room-info")
           },
           (this.props.breakpoint === "sm" || this.props.breakpoint === "md") &&
-          (this.props.hub.entry_mode !== "invite" || this.props.hubChannel.can("update_hub")) && {
-            id: "invite",
-            label: <FormattedMessage id="more-menu.invite" defaultMessage="Invite" />,
-            icon: InviteIcon,
-            onClick: () => this.props.scene.emit("action_invite")
-          },
+            toggleHubsFeatures("invite", configs.FEATURES_TO_ENABLE) ? (this.props.hub.entry_mode !== "invite" || this.props.hubChannel.can("update_hub")) && {
+              id: "invite",
+              label: <FormattedMessage id="more-menu.invite" defaultMessage="Invite" />,
+              icon: InviteIcon,
+              onClick: () => this.props.scene.emit("action_invite")
+            } : null,
           this.isFavorited()
             ? {
               id: "unfavorite-room",
@@ -1508,6 +1508,13 @@ class UIRoot extends Component {
                     )}
                   </>
                 }
+                // HIER TRANSPARENTIE LOGICA MAKEN
+
+                toolbarClassName={((this.props.breakpoint == "sm" || this.props.breakpoint == "md") &&
+                  isToolbarEmpty(configs.FEATURES_TO_ENABLE)
+
+                ) ? classNames(styles.transparenttoolbar) : null}
+
                 sidebar={
                   this.state.sidebarId ? (
                     <>
@@ -1607,12 +1614,12 @@ class UIRoot extends Component {
                 modal={this.state.dialog}
                 toolbarLeft={
                   <>
-                    <InvitePopoverContainer
+                    {toggleHubsFeatures("invite", configs.FEATURES_TO_ENABLE) && <InvitePopoverContainer
                       hub={this.props.hub}
                       hubChannel={this.props.hubChannel}
                       scene={this.props.scene}
                       store={this.props.store}
-                    />
+                    />}
                     {isLockedDownDemo && <SeePlansCTA />}
                   </>
                 }
@@ -1656,12 +1663,14 @@ class UIRoot extends Component {
                             />
                           </>
                         )}
-                        {(this.props.hubChannel.can("spawn_emoji")) && (
-                          <ReactionPopoverContainer
-                            scene={this.props.scene}
-                            initialPresence={getPresenceProfileForSession(this.props.presences, this.props.sessionId)}
-                          />
-                        )}
+                        {toggleHubsFeatures("react", configs.FEATURES_TO_ENABLE) ? (
+                          this.props.hubChannel.can("spawn_emoji") ? (
+                            <ReactionPopoverContainer
+                              scene={this.props.scene}
+                              initialPresence={getPresenceProfileForSession(this.props.presences, this.props.sessionId)}
+                            />
+                          ) : null
+                        ) : null}
                       </>
                     )}
                     {(!isLockedDownDemo && toggleHubsFeatures('text_chat', configs.FEATURES_TO_ENABLE)) && (

@@ -10,11 +10,14 @@ import toggleHubsFeatures from "../../../custom/featureToggle";
 const wasd_vec2 = "/var/mouse-and-keyboard/wasd_vec2";
 const keyboardCharacterAcceleration = "/var/mouse-and-keyboard/keyboardCharacterAcceleration";
 const arrows_vec2 = "/var/mouse-and-keyboard/arrows_vec2";
+
+
 const togglePenWithRMB = "/vars/mouse-and-keyboard/drop_pen_with_RMB";
 const togglePenWithEsc = "/vars/mouse-and-keyboard/drop_pen_with_esc";
 const togglePenWithP = "/vars/mouse-and-keyboard/drop_pen_with_p";
 const togglePenWithHud = "/vars/mouse-and-keyboard/drop_pen_with_hud";
 const togglePen = "/vars/mouse-and-keyboard/togglePen";
+
 const startInspectingViaMouse = "/vars/mouse-and-keyboard/startInspectingViaMouse";
 const startInspectingViaKeyboard = "/vars/mouse-and-keyboard/startInspectingViaKeyboard";
 const stopInspectingViaKeyboard = "/vars/mouse-and-keyboard/stopInspectingViaKeyboard";
@@ -143,32 +146,32 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       dest: { value: paths.actions.thaw },
       xform: xforms.falling
     },
-    {
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.keyboard.key("p") },
       dest: { value: togglePenWithP },
       xform: xforms.rising
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.hud.penButton },
       dest: { value: togglePenWithHud },
       xform: xforms.rising
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: [togglePenWithHud, togglePenWithP],
       dest: { value: togglePen },
       xform: xforms.any
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: togglePen },
       dest: { value: paths.actions.spawnPen },
       xform: xforms.rising,
       priority: 100
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_camera", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.keyboard.key("c") },
       dest: { value: paths.actions.toggleCamera },
       xform: xforms.rising
-    },
+    } : emptyBinding,
     {
       src: { value: paths.device.smartMouse.cursorPose },
       dest: { value: paths.actions.cursor.right.pose },
@@ -574,48 +577,49 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       xform: xforms.rising,
       priority: 200
     },
-    {
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.mouse.buttonLeft },
       dest: { value: paths.actions.cursor.right.startDrawing },
       xform: xforms.rising,
       priority: 3
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.mouse.buttonLeft },
       dest: { value: paths.actions.cursor.right.stopDrawing },
       xform: xforms.falling,
       priority: 3
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: {
         value: k("wheelWithShift")
       },
       dest: { value: "/var/cursorScalePenTipWheel" },
       xform: xforms.copy,
       priority: 200
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: "/var/cursorScalePenTipWheel" },
       dest: { value: paths.actions.cursor.right.scalePenTip },
       xform: xforms.scale(0.03)
-    },
-    {
+    } : emptyBinding,
+
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.mouse.buttonRight },
       dest: { value: togglePenWithRMB },
       xform: xforms.falling,
       priority: 200
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: paths.device.keyboard.key("Escape") },
       dest: { value: togglePenWithEsc },
       xform: xforms.rising
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: [togglePenWithRMB, togglePenWithEsc, togglePenWithP, togglePenWithHud],
       dest: { value: togglePen },
       xform: xforms.any
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: {
         bool: paths.device.keyboard.key("control"),
         value: paths.device.keyboard.key("z")
@@ -623,19 +627,19 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       dest: { value: paths.actions.cursor.right.undoDrawing },
       priority: 1001,
       xform: xforms.rising
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: togglePen },
       dest: { value: paths.actions.cursor.right.drop },
       xform: xforms.rising,
       priority: 200
-    },
-    {
+    } : emptyBinding,
+    toggleHubsFeatures("place_pen", configs.FEATURES_TO_ENABLE) ? {
       src: { value: togglePen },
       dest: { value: paths.actions.pen.remove },
       xform: xforms.rising,
       priority: 200
-    }
+    } : emptyBinding,
   ],
 
   [sets.rightCursorHoldingCamera]: [
