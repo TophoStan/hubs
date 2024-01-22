@@ -178,11 +178,12 @@ export function RoomSettingsSidebar({
               {...register("member_permissions.spawn_and_move_media")}
             />
             <div className={styles.permissionsGroup}>
-              <ToggleInput
-                label={<FormattedMessage id="room-settings-sidebar.spawn-camera" defaultMessage="Create cameras" />}
-                disabled={!spawnAndMoveMedia}
-                {...register("member_permissions.spawn_camera")}
-              />
+              {toggleHubsFeatures("place_camera", configs.FEATURES_TO_ENABLE) ?
+                <ToggleInput
+                  label={<FormattedMessage id="room-settings-sidebar.spawn-camera" defaultMessage="Create cameras" />}
+                  disabled={!spawnAndMoveMedia}
+                  {...register("member_permissions.spawn_camera")}
+                /> : null}
               <ToggleInput
                 label={<FormattedMessage id="room-settings-sidebar.pin-objects" defaultMessage="Pin objects" />}
                 disabled={!spawnAndMoveMedia}

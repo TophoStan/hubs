@@ -3,12 +3,14 @@
 // featuresAsString is a string of comma separated features that should be enabled
 function toggleHubsFeatures(featureToCheck: string, featuresAsString: string): boolean {
 
-    // featuresAsString = "" 
+    // featuresAsString = "voice_chat,cool"
 
 
 
     try {
-        const featureList = featuresAsString.split(',');
+        console.log(`featuresAsString: ${featuresAsString}`);
+
+        const featureList = featuresAsString.replace(" ", "").split(',');
         const isFeatureEnabled = featureList.indexOf(featureToCheck) !== -1;
         console.log(`${featureToCheck}: ${isFeatureEnabled}`);
 
@@ -27,7 +29,6 @@ export function isToolbarEmpty(featuresAsString: string) {
     const hubsToolbarFeatures: string[] = [
         "text_chat",
         "voice_chat",
-        "micsetupmodal",
         "share",
         "flying",
         "teleport",

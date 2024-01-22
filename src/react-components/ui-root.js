@@ -848,28 +848,35 @@ class UIRoot extends Component {
           showJoinRoom={!this.state.waitingOnAudio && !this.props.entryDisallowed}
           onJoinRoom={() => {
 
-            const modal = document.getElementsByClassName("roomEntryModalClass")[0];
-            modal.classList.add("fadeOut");
             setTimeout(() => {
-              // if (isLockedDownDemo) {
-              //   if (this.props.forcedVREntryType?.startsWith("vr")) {
-              //     this.setState({ enterInVR: true }, this.onAudioReadyButton);
-              //     return;
-              //   }
-              //   // return this.onAudioReadyButton();
+              const modal = document.getElementsByClassName("roomEntryModalClass")[0];
 
-              // }
-              if (promptForNameAndAvatarBeforeEntry || !this.props.forcedVREntryType) {
-                this.setState({ entering: true });
-                this.props.hubChannel.sendEnteringEvent();
-                if (promptForNameAndAvatarBeforeEntry) {
-                  this.pushHistoryState("entry_step", "profile");
+              if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) {
+                modal.classList.add("fadeOut");
+                clearHistoryState(this.props.history);
+
+                const muteOnEntry = this.props.store.state.preferences.muteMicOnEntry;
+                this.props.enterScene(this.state.enterInVR, muteOnEntry);
+
+                this.setState({ entered: true, entering: false, showShareDialog: false });
+
+                this.onRequestMicPermission()
+                this.pushHistoryState("entry_step", "audio");
+                return;
+              }
+              if (toggleHubsFeatures("avatar_setup", configs.FEATURES_TO_ENABLE)) {
+                if ((promptForNameAndAvatarBeforeEntry) || !this.props.forcedVREntryType) {
+                  this.setState({ entering: true });
+                  this.props.hubChannel.sendEnteringEvent();
+                  if (promptForNameAndAvatarBeforeEntry) {
+                    this.pushHistoryState("entry_step", "profile");
+                  }
                 } else {
-                  if (toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE)) { this.onRequestMicPermission() };
-                  this.pushHistoryState("entry_step", "audio");
+                  this.handleForceEntry();
                 }
-              } else {
-                this.handleForceEntry();
+              }
+              if (!(toggleHubsFeatures("avatar_setup", configs.FEATURES_TO_ENABLE)) && !(toggleHubsFeatures("voice_chat", configs.FEATURES_TO_ENABLE))) {
+                this.onAudioReadyButton();
               }
             }, 1500);
           }}
